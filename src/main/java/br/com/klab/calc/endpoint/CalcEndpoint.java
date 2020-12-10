@@ -12,63 +12,51 @@ import java.util.List;
 @RequestMapping("/calculadora/")
 public class CalcEndpoint {
 
+    @Autowired
     private Operacoes operacoes;
 
-    @Autowired
-    public CalcEndpoint(Operacoes operacoes) {
-        this.operacoes = operacoes;
-    }
-
-    //////////////////////////////////////
     ///////// OPERAÇÕES BÁSICAS  /////////
-    //////////////////////////////////////
 
     @GetMapping("/somar/{valor1}/{valor2}")
-    public int soma(@PathVariable("valor1") int v1, @PathVariable("valor2") int v2) {
-        return operacoes.soma(v1, v2);
+    public ResponseEntity soma(@PathVariable("valor1") Float valor1, @PathVariable("valor2") Float valor2) {
+        return new ResponseEntity(operacoes.soma(valor1,valor2), HttpStatus.OK);
     }
 
 
     @GetMapping("/subtrair/{valor1}/{valor2}")
-    public int subtrai(@PathVariable("valor1") int v1, @PathVariable("valor2") int v2) {
-        return operacoes.subtrai(v1, v2);
+    public ResponseEntity subtrai(@PathVariable("valor1") Float valor1, @PathVariable("valor2") Float valor2) {
+        return new ResponseEntity(operacoes.subtrai(valor1, valor2), HttpStatus.OK);
     }
 
     @GetMapping("/multiplicar/{valor1}/{valor2}")
-    public int multiplica(@PathVariable("valor1") int v1, @PathVariable("valor2") int v2) {
-        return operacoes.multiplica(v1, v2);
+    public ResponseEntity multiplica(@PathVariable("valor1") Float valor1, @PathVariable("valor2") Float valor2) {
+        return new ResponseEntity(operacoes.multiplica(valor1, valor2), HttpStatus.OK);
     }
 
     @GetMapping("/dividir/{valor1}/{valor2}")
-    public ResponseEntity<String> divide(@PathVariable("valor1") double v1, @PathVariable("valor2") double v2) {
-        try {
-            return new ResponseEntity(String.valueOf(operacoes.divide(v1, v2)), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity("Impossível dividir por 0.",HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity divide(@PathVariable("valor1") Float valor1, @PathVariable("valor2") Float valor2) {
+        return new ResponseEntity(operacoes.divide(valor1, valor2), HttpStatus.OK);
     }
 
-    //////////////////////////////////////
     ///// OPERAÇÕES BÁSICAS EM LISTA /////
-    //////////////////////////////////////
 
-    @GetMapping("/somaLista")
-    public double somaLista(@RequestParam("valor") List<Double> valor) {
-        return operacoes.somaLista(valor);
+    @GetMapping("/somarLista")
+    public ResponseEntity somaLista(@RequestParam("valores") List<Float> valores) {
+        return new ResponseEntity(operacoes.somaLista(valores), HttpStatus.OK);
     }
 
-    @GetMapping("/subtraiLista")
-    public double subtraiLista(@RequestParam("valor") List<Double> valor) {
-        return operacoes.subtraiLista(valor);
+    @GetMapping("/subtrairLista")
+    public ResponseEntity subtraiLista(@RequestParam("valores") List<Float> valores) {
+        return new ResponseEntity(operacoes.subtraiLista(valores), HttpStatus.OK);
     }
 
-    @GetMapping("/multiplicaLista")
-    public double multiplicaLista(@RequestParam List<Double> valor) {
-        return operacoes.multiplicaLista(valor);
+    @GetMapping("/multiplicarLista")
+    public ResponseEntity multiplicaLista(@RequestParam("valores") List<Float> valores) {
+        return new ResponseEntity(operacoes.multiplicaLista(valores), HttpStatus.OK);
     }
 
-    @GetMapping("/divideLista")
-    public double divideLista(@RequestParam List<Double> valor) {
-        return operacoes.divideLista(valor);
+    @GetMapping("/dividirLista")
+    public ResponseEntity divideLista(@RequestParam("valores") List<Float> valores) {
+        return new ResponseEntity(operacoes.divideLista(valores), HttpStatus.OK);
     }
 }
