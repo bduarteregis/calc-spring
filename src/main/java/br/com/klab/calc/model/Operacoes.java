@@ -2,11 +2,14 @@ package br.com.klab.calc.model;
 
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class Operacoes {
 
+    public Map<String, String> headers;
     public String operacao;
     public Float valor1;
     public Float valor2;
@@ -19,41 +22,47 @@ public class Operacoes {
         this.valor2 = valor2;
     }
 
-    public void valoresLista(String operacao, List<Float> lista) {
+    public void listaValores(String operacao, List<Float> lista) {
         this.operacao = operacao;
         this.lista = lista;
     }
 
     ///////// OPERAÇÕES BÁSICAS  /////////
 
-    public Operacoes soma(Float valor1, Float valor2) {
-        valores("somar", valor1, valor2);
-        this.resultado = valor1 + valor2;
-        return this;
-    }
+    public Operacoes calcula(Map<String, String> headers, Float valor1, Float valor2) {
+        this.headers = new HashMap<>();
+        this.headers.put("password", headers.get("password"));
+        this.headers.put("operacao", headers.get("operacao"));
 
-    public Operacoes subtrai(Float valor1, Float valor2) {
-        valores("subtrair", valor1, valor2);
-        this.resultado = valor1 - valor2;
-        return this;
-    }
+        switch (headers.get("operacao")){
 
-    public Operacoes multiplica(Float valor1, Float valor2) {
-        valores("multiplicar", valor1, valor2);
-        this.resultado = valor1 * valor2;
-        return this;
-    }
+            case "somar":
+                valores(headers.get("operacao"),valor1, valor2);
+                this.resultado = valor1 + valor2;
+                return this;
 
-    public Operacoes divide(Float valor1, Float valor2) {
-        valores("dividir", valor1, valor2);
-        this.resultado = valor1 / valor2;
-        return this;
+            case "subtrair":
+                valores(headers.get("operacao"), valor1, valor2);
+                this.resultado = valor1 - valor2;
+                return this;
+
+            case "multiplicar":
+                valores(headers.get("operacao"), valor1, valor2);
+                this.resultado = valor1 * valor2;
+                return this;
+
+            case "dividir":
+                valores(headers.get("operacao"), valor1, valor2);
+                this.resultado = valor1 / valor2;
+                return this;
+        }
+        return null;
     }
 
     ///// OPERAÇÕES BÁSICAS EM LISTA /////
 
     public Operacoes somaLista(List<Float> valores) {
-        valoresLista("somarLista", valores);
+        listaValores("somarLista", valores);
         this.resultado = valores.get(0);
         for(int i = 1; i < valores.size(); i++) {
             this.resultado += valores.get(i);
@@ -62,7 +71,7 @@ public class Operacoes {
     }
 
     public Operacoes subtraiLista(List<Float> valores) {
-        valoresLista("subtrairLista", valores);
+        listaValores("subtrairLista", valores);
         this.resultado = valores.get(0);
         for(int i = 1; i < valores.size(); i++) {
             this.resultado -= valores.get(i);
@@ -71,7 +80,7 @@ public class Operacoes {
     }
 
     public Operacoes multiplicaLista(List<Float> valores) {
-        valoresLista("multiplicarLista", valores);
+        listaValores("multiplicarLista", valores);
         this.resultado = valores.get(0);
         for(int i = 1; i < valores.size(); i++) {
             this.resultado *= valores.get(i);
@@ -80,7 +89,7 @@ public class Operacoes {
     }
 
     public Operacoes divideLista(List<Float> valores) {
-        valoresLista("dividirLista", valores);
+        listaValores("dividirLista", valores);
         this.resultado = valores.get(0);
         for(int i = 1; i < valores.size(); i++) {
             this.resultado /= valores.get(i);

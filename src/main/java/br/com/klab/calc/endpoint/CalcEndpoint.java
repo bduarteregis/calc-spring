@@ -2,11 +2,16 @@ package br.com.klab.calc.endpoint;
 
 import br.com.klab.calc.model.Operacoes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/calculadora/")
@@ -17,25 +22,15 @@ public class CalcEndpoint {
 
     ///////// OPERAÇÕES BÁSICAS  /////////
 
-    @GetMapping("/somar/{valor1}/{valor2}")
-    public ResponseEntity soma(@PathVariable("valor1") Float valor1, @PathVariable("valor2") Float valor2) {
-        return new ResponseEntity(operacoes.soma(valor1,valor2), HttpStatus.OK);
-    }
-
-
-    @GetMapping("/subtrair/{valor1}/{valor2}")
-    public ResponseEntity subtrai(@PathVariable("valor1") Float valor1, @PathVariable("valor2") Float valor2) {
-        return new ResponseEntity(operacoes.subtrai(valor1, valor2), HttpStatus.OK);
-    }
-
-    @GetMapping("/multiplicar/{valor1}/{valor2}")
-    public ResponseEntity multiplica(@PathVariable("valor1") Float valor1, @PathVariable("valor2") Float valor2) {
-        return new ResponseEntity(operacoes.multiplica(valor1, valor2), HttpStatus.OK);
-    }
-
-    @GetMapping("/dividir/{valor1}/{valor2}")
-    public ResponseEntity divide(@PathVariable("valor1") Float valor1, @PathVariable("valor2") Float valor2) {
-        return new ResponseEntity(operacoes.divide(valor1, valor2), HttpStatus.OK);
+    @GetMapping("/{valor1}/{valor2}")
+    public ResponseEntity soma(@RequestHeader Map<String, String> headers,
+                               @PathVariable("valor1") Float valor1,
+                               @PathVariable("valor2") Float valor2) {
+        if (headers.containsKey("password") && headers.containsValue("calc-pass")) {
+            return new ResponseEntity(operacoes.calcula(headers,valor1,valor2), HttpStatus.OK);
+        } else {
+            return new ResponseEntity("Please verify your password", HttpStatus.BAD_REQUEST);
+        }
     }
 
     ///// OPERAÇÕES BÁSICAS EM LISTA /////
